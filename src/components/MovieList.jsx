@@ -8,7 +8,9 @@ export default class extends Component {
             hover: '',
             pages: [1, 2, 3],
             currentPage: 1,
-            movies: []
+            movies: [],
+            fvi: []
+
         }
     }
     async componentDidMount() {
@@ -26,12 +28,29 @@ export default class extends Component {
             movies: [...moviedata.data.results]
         })
     }
+    handelfavourite = (movie) => {
+        let oldobj = JSON.parse(localStorage.getItem("moviesItem") || '[]');
+
+        console.log("33", oldobj, JSON.parse('[1, 5, "false"]'))
+        if (this.state.fvi.includes(movie.id)) {
+            oldobj = oldobj.filter((objmovie) => objmovie.id != movie.id);
+            let fi = this.state.fvi.filter((id) => id != movie.id);
+            this.setState({
+                fvi: [...fi]
+            })
+        } else {
+            oldobj.push(movie);
+            this.state.fvi.push(movie.id);
+        }
+        console.log(oldobj, "37");
+        localStorage.setItem("moviesItem", JSON.stringify(oldobj));
+    }
     render() {
         return (
             <>
                 <div className="movies-list">
                     {
-                       this.state.movies.length>0 ? this.state.movies.map((movie) => (
+                        this.state.movies.length > 0 ? this.state.movies.map((movie) => (
                             <>
                                 {
                                     movie && (
@@ -40,17 +59,18 @@ export default class extends Component {
                                             <h5 className="card-title">{movie.title}</h5>
                                             <div className="card_div d-flex justify-content-center">
                                                 {
-                                                    this.state.hover == movie.id && <button type="button" class="btn btn-primary movie-card-button">Primary</button>
-
+                                                    this.state.hover == movie.id && <button type="button" class="btn btn-primary movie-card-button" onClick={() => this.handelfavourite(movie)}>{
+                                                    this.state.fvi.includes(movie.id)?"added":"add"
+                                                    }</button>
                                                 }
                                             </div>
                                         </div>
                                     )
                                 }
-                               
+
                             </>
-                       )) : (
-                                <>page is Loding </>
+                        )) : (
+                            <>page is Loding </>
                         )
                     }
                 </div>
@@ -64,7 +84,7 @@ export default class extends Component {
                             </li>
                             {
                                 this.state.pages.map((page) => (
-                                    <li className={`page-item ${page == this.state.currentPage && "active"}`} onClick={(e) => {this.state.currentPage != page && this.setState({ currentPage: page }, this.handelchange) && console.log(this.state.currentPage) }}><a class="page-link">{page}</a></li>
+                                    <li className={`page-item ${page == this.state.currentPage && "active"}`} onClick={(e) => { this.state.currentPage != page && this.setState({ currentPage: page }, this.handelchange) && console.log(this.state.currentPage) }}><a class="page-link">{page}</a></li>
                                 ))
                             }
                             <li class="page-item" onClick={() => this.setState({ pages: [...this.state.pages, this.state.pages.length + 1], currentPage: this.state.currentPage + 1 }, this.handelchange)}>

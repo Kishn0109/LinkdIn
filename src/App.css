@@ -53,3 +53,16 @@
 .active {
   background-color: red;
 }
+.table-img {
+  width: 20px;
+  height: 10px;
+}
+.fl-img{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+a{
+  text-decoration: none;
+  color: black !important;
+}
